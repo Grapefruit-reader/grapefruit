@@ -28,7 +28,10 @@ class DriveRepository @Inject constructor(
         mimeType: String
     ): Flow<ResourceState<String>> {
         return handleWithFlow { driveManager.createFile(fileName, parents, mimeType) }
+    }
 
+    suspend fun searchFile(name: String): Flow<ResourceState<String?>> {
+        return handleWithFlow { driveManager.searchFolder(name) }
     }
 
 

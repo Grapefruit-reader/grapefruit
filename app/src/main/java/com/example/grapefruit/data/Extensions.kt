@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-fun <T> handleWithFlow (call: suspend () -> T) : Flow<ResourceState<T>> {
+suspend fun <T> handleWithFlow (call: suspend () -> T) : Flow<ResourceState<T>> {
     return flow{
         emit(ResourceState.Loading())
 
