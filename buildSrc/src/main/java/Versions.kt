@@ -18,4 +18,6 @@ object Versions {
     const val hiltCompiler = "1.0.0-alpha01"
     const val hiltNavigationCompose = "1.0.0"
     const val coroutines = "1.7.3"
+    const val splashScreen = "1.0.1"
+    const val QRCode = "4.1.0"
 }
