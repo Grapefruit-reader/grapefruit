@@ -63,31 +63,3 @@ fun NormalTextField(
     )
 }
 
-@ExperimentalMaterial3Api
-@Preview
-@Composable
-fun NormalTextView_Preview() {
-    NormalTextField(
-        value = "Csetneki Péter",
-        label = "Név",
-        onValueChange = {},
-        leadingIcon = {},
-        trailingIcon = {},
-        onDone = {}
-    )
-}
-
-@ExperimentalMaterial3Api
-@Preview
-@Composable
-fun NormalTextView_Error_Preview() {
-    NormalTextField(
-        value = "abc",
-        label = "Mennyiség (kg)",
-        onValueChange = {},
-        leadingIcon = {},
-        trailingIcon = {},
-        onDone = {},
-        isError = true
-    )
-}

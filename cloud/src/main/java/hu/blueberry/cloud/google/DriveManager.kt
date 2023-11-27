@@ -40,7 +40,7 @@ class DriveManager @Inject constructor(
         return Drive.Builder(
             NetHttpTransport(), GsonFactory.getDefaultInstance(),
             cloudBase.getCredentials(scopes)
-        ).build()
+        ).setApplicationName("Grapefruit").build()
     }
 
 
