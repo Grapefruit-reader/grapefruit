@@ -1,11 +1,11 @@
 package hu.blueberry.cloud.google
 
-import android.content.Context
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.AddSheetRequest
+import com.google.api.services.sheets.v4.model.AppendValuesResponse
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse
 import com.google.api.services.sheets.v4.model.Request
@@ -15,7 +15,6 @@ import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse
 import com.google.api.services.sheets.v4.model.ValueRange
-import dagger.hilt.android.qualifiers.ApplicationContext
 import hu.blueberry.cloud.google.base.CloudBase
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,6 +41,8 @@ class GoogleSheetsManager @Inject constructor(
         val RAW = "RAW"
         val USER_ENTERED = "USER_ENTERED"
     }
+
+    val MAJOR_DIMENSION = "ROWS"
 
 
     fun createSheet(name: String): String? {
@@ -83,6 +84,25 @@ class GoogleSheetsManager @Inject constructor(
                     valueInputOption = InputOption.USER_ENTERED
                 }
                 .execute()
+        return result
+    }
+
+    fun appendToSpreadSheet(
+        spreadsheetId: String,
+        range: String,
+        values: MutableList<MutableList<Any>>
+    ): AppendValuesResponse? {
+
+        var result: AppendValuesResponse? = null
+        val body = ValueRange()
+        body.setValues(values)
+        body.majorDimension = MAJOR_DIMENSION
+        result = sheets.spreadsheets().values()
+            .append(spreadsheetId, range, body)
+            .apply {
+                valueInputOption = InputOption.USER_ENTERED
+            }
+            .execute()
         return result
     }
 
