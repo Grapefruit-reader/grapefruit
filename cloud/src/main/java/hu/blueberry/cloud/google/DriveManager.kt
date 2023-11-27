@@ -1,10 +1,12 @@
 package hu.blueberry.cloud.google
 
 import android.content.Context
+import android.os.Environment
 import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.*
+import com.google.api.client.http.FileContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
@@ -98,15 +100,19 @@ class DriveManager @Inject constructor(
     }
 
 
-    fun createFile(name: String, parents: List<String>, mimeType:String): String {
-        var file = File().apply {
+    fun createFile(name: String, parents: List<String>, mimeType:String, file:java.io.File): String {
+
+        var f = File().apply {
             this.name = name
             this.parents = parents
             this.mimeType = mimeType
         }
 
-        file = drive.files().create(file).execute()
-        return file.id
+
+        val mediaContent = FileContent(MimeType.PDF, file)
+
+        f = drive.files().create(f, mediaContent).execute()
+        return f.id
     }
 
 }

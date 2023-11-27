@@ -32,9 +32,7 @@ class WriteVoteViewModel @Inject constructor(
         val range = memoryDatabase.workSheet + Ranges.YES_RANGE
 
         viewModelScope.launch {
-            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values).collectLatest {
-                it
-            }
+            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values)
         }
     }
 
