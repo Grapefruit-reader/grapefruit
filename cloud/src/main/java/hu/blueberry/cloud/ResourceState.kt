@@ -1,10 +1,11 @@
 package hu.blueberry.cloud
 
-import java.nio.ReadOnlyBufferException
 
 sealed class ResourceState<T> {
 
     class Loading<T> : ResourceState<T>()
+
+    class Initial<T> : ResourceState<T>()
 
     class Success<T> (val data:T) : ResourceState<T>()
 
