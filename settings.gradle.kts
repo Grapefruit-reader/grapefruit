@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Grapefruit"
 include(":app")
+include(":cloud")

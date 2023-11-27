@@ -1,4 +1,4 @@
-package com.example.grapefruit.cloud
+package hu.blueberry.cloud.google
 
 import android.content.Context
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -14,22 +14,17 @@ import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse
 import com.google.api.services.sheets.v4.model.ValueRange
-import hu.blueberry.googlesheetsintegrationapp.drive.base.CloudBase
-import hu.blueberry.googlesheetsintegrationapp.drive.base.PermissionHandler
+import dagger.hilt.android.qualifiers.ApplicationContext
+import hu.blueberry.cloud.google.base.CloudBase
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
 @Singleton
-class GoogleSheetsManager constructor(
-    var permissionHandler: PermissionHandler,
-    var context: Context
+class GoogleSheetsManager @Inject constructor(
+    private var cloudBase: CloudBase
 ) {
-
-    var cloudBase: CloudBase = CloudBase(context)
-
     var scopes = listOf(SheetsScopes.SPREADSHEETS)
-
-
 
     //TODO What if the user is not signed in?
     private fun getSheetsService(): Sheets? {
@@ -53,11 +48,9 @@ class GoogleSheetsManager constructor(
         spreadsheet.properties = SpreadsheetProperties()
             .apply { title = name }
 
-        cloudBase.errorHandlingRun(permissionHandler) {
-
             spreadsheet = sheets.spreadsheets().create(spreadsheet).execute()
             spreadsheet.properties
-        }
+
 
         return spreadsheet.spreadsheetId
 
@@ -69,9 +62,8 @@ class GoogleSheetsManager constructor(
     ): ValueRange? {
         var result: ValueRange? = null
 
-        cloudBase.errorHandlingRun(permissionHandler) {
             result = sheets.spreadsheets().values().get(spreadsheetId, range).execute()
-        }
+
         return result
     }
 
@@ -86,21 +78,20 @@ class GoogleSheetsManager constructor(
         body.setValues(values)
 
 
-        cloudBase.errorHandlingRun(permissionHandler) {
             result = sheets.spreadsheets().values()
                 .update(spreadsheetId, range, body)
                 .apply {
                     valueInputOption = InputOption.USER_ENTERED
                 }
                 .execute()
-        }
+
         return result
     }
 
     fun createNewTab(spreadsheetId: String, name: String): BatchUpdateSpreadsheetResponse {
 
         var spreadsheet:BatchUpdateSpreadsheetResponse = BatchUpdateSpreadsheetResponse()
-        cloudBase.errorHandlingRun(permissionHandler){
+
            val request = Request()
                .setAddSheet(
                    AddSheetRequest()
@@ -113,7 +104,7 @@ class GoogleSheetsManager constructor(
 
             spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
 
-        }
+
 
         return spreadsheet
 
