@@ -44,30 +44,8 @@ class DriveManager @Inject constructor(
     }
 
 
-//    fun createFolder(name:String/*, askPermission: (ex:UserRecoverableAuthIOException)->Unit*/): String? {
-//
-//        var folder = File()
-//         //   try {
-//                val folderData = File().apply {
-//                    this.name = name
-//                    this.mimeType = MimeType.FOLDER
-//                }
-//
-//                folder = drive.files().create(folderData).execute()
-//          /*  }catch (ex: UserRecoverableAuthIOException){
-//                Log.d("Folder", ex.message ?: "")
-//               // askPermission(ex)
-//
-//            }catch (ex: Exception){
-//                Log.d("Folder", ex.message ?: "")
-//            }*/
-//
-//        return folder.id
-//
-//
-//    }
 
-    fun createFolder(name:String): String? {
+    fun createFolder(name:String): String {
 
         val folder: File
 
@@ -84,11 +62,10 @@ class DriveManager @Inject constructor(
     }
 
 
-    fun searchFolder(name: String): String {
+    fun searchFolder(name: String): String? {
 
-        var folderId = ""
-            try {
-                val service = getDriveService()!!
+        val folderId: String?
+        val service = getDriveService()!!
 
                 val files = service.files().list()
                 files.q = "mimeType='${MimeType.FOLDER}'"
@@ -103,22 +80,13 @@ class DriveManager @Inject constructor(
                     it.name == name
                 }.firstOrNull()
 
-                folderId = folder!!.id
-
-
-            }catch (ex: UserRecoverableAuthIOException){
-                Log.d("Folder", ex.message ?: "")
-
-
-            }catch (ex: Exception){
-                Log.d("Folder", ex.message ?: "")
-            }
+                folderId = folder?.id
 
         return folderId
 
     }
 
-    fun createSpreadSheetInFolder(folderId:String, sheetName:String): String? {
+    fun createSpreadSheetInFolder(folderId:String, sheetName:String): String {
         val folderData = File().apply {
             this.name = sheetName
             this.mimeType = MimeType.SPREADSHEET
@@ -130,7 +98,7 @@ class DriveManager @Inject constructor(
     }
 
 
-    fun createFile(name: String, parents: List<String>, mimeType:String): String? {
+    fun createFile(name: String, parents: List<String>, mimeType:String): String {
         var file = File().apply {
             this.name = name
             this.parents = parents

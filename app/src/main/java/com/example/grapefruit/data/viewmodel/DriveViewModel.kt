@@ -17,8 +17,8 @@ class DriveViewModel @Inject constructor(
     var driveRepository: DriveRepository
 ) : ViewModel(){
 
-    private var _filename: MutableStateFlow<ResourceState<String?>> = MutableStateFlow(ResourceState.Loading())
-    val filename : StateFlow<ResourceState<String?>> = _filename
+    private var _filename: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Loading())
+    val filename : StateFlow<ResourceState<String>> = _filename
     fun createFolder(name: String){
         viewModelScope.launch {
             driveRepository.createFolder(name)
@@ -27,6 +27,5 @@ class DriveViewModel @Inject constructor(
                     _filename.value = fileName
                 }
         }
-
     }
 }

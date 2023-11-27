@@ -90,8 +90,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(10.dp))
             Button(
             onClick = {
-                //driveViewModel.createFolder(folderValue)
-                onNavigateToSpreadsheetTools()
+                driveViewModel.createFolder(folderValue)
             },
             modifier = Modifier.width(280.dp),
             )
