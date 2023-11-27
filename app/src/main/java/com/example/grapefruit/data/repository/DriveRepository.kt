@@ -15,14 +15,18 @@ class DriveRepository @Inject constructor(
         return handleWithFlow { driveManager.createFolder(name) }
     }
 
-    suspend fun createSpreadSheetInFolder(
+    suspend fun createFolderFlow(name: String): Flow<ResourceState<String>> {
+        return handleWithFlow { driveManager.createFolder(name) }
+    }
+
+    suspend fun createSpreadSheetInFolderFlow(
         folderId: String,
         sheetName: String
     ): Flow<ResourceState<String>> {
         return handleWithFlow { driveManager.createSpreadSheetInFolder(folderId, sheetName) }
     }
 
-    suspend fun createFile(
+    suspend fun createFileFlow(
         fileName: String,
         parents: List<String>,
         mimeType: String
@@ -30,10 +34,32 @@ class DriveRepository @Inject constructor(
         return handleWithFlow { driveManager.createFile(fileName, parents, mimeType) }
     }
 
-    suspend fun searchFolder(name: String): Flow<ResourceState<String?>> {
+    suspend fun searchFolderFlow(name: String): Flow<ResourceState<String?>> {
         return handleWithFlow { driveManager.searchFolder(name) }
     }
 
+    suspend fun createFolderBlocking(name: String): String {
+        return driveManager.createFolder(name)
+    }
+
+    suspend fun searchFolderBlocking(name: String): String? {
+        return driveManager.searchFolder(name)
+    }
+
+    suspend fun createSpreadSheetInFolderBlocking(
+        folderId: String,
+        sheetName: String
+    ): String {
+        return  driveManager.createSpreadSheetInFolder(folderId, sheetName)
+    }
+
+    suspend fun createFileFlowBlocking(
+        fileName: String,
+        parents: List<String>,
+        mimeType: String
+    ): String {
+        return driveManager.createFile(fileName, parents, mimeType)
+    }
 
 }
 
