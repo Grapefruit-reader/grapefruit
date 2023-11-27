@@ -12,6 +12,7 @@ import com.google.api.services.sheets.v4.model.Request
 import com.google.api.services.sheets.v4.model.SheetProperties
 import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties
+import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse
 import com.google.api.services.sheets.v4.model.ValueRange
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -76,22 +77,17 @@ class GoogleSheetsManager @Inject constructor(
         var result: UpdateValuesResponse? = null
         val body = ValueRange()
         body.setValues(values)
-
-
             result = sheets.spreadsheets().values()
                 .update(spreadsheetId, range, body)
                 .apply {
                     valueInputOption = InputOption.USER_ENTERED
                 }
                 .execute()
-
         return result
     }
 
     fun createNewTab(spreadsheetId: String, name: String): BatchUpdateSpreadsheetResponse {
-
         var spreadsheet:BatchUpdateSpreadsheetResponse = BatchUpdateSpreadsheetResponse()
-
            val request = Request()
                .setAddSheet(
                    AddSheetRequest()
@@ -103,11 +99,29 @@ class GoogleSheetsManager @Inject constructor(
             val batch = BatchUpdateSpreadsheetRequest().setRequests(listOf(request))
 
             spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
-
-
-
         return spreadsheet
+    }
 
+    fun renameTab(spreadsheetId: String, oldName: String, newName:String): BatchUpdateSpreadsheetResponse? {
+        var spreadsheet = BatchUpdateSpreadsheetResponse()
+        val sheet = sheets.spreadsheets().get(spreadsheetId).execute()
+
+        val sheetId = sheet.sheets.filter { it.properties.title == oldName }.firstOrNull()?.properties?.sheetId ?: return null
+
+
+        val request = Request().apply {
+            updateSheetProperties = UpdateSheetPropertiesRequest().apply {
+                this.properties = SheetProperties().apply {
+                    this.sheetId = sheetId
+                    this.title = newName
+                }
+            }
+        }
+
+        val batch = BatchUpdateSpreadsheetRequest().setRequests(listOf(request))
+
+        spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
+        return spreadsheet
     }
 
 
