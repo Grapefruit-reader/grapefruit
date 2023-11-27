@@ -78,6 +78,7 @@ class GoogleSheetsManager @Inject constructor(
         var result: UpdateValuesResponse? = null
         val body = ValueRange()
         body.setValues(values)
+        body.majorDimension = MAJOR_DIMENSION
             result = sheets.spreadsheets().values()
                 .update(spreadsheetId, range, body)
                 .apply {
@@ -141,6 +142,34 @@ class GoogleSheetsManager @Inject constructor(
         val batch = BatchUpdateSpreadsheetRequest().setRequests(listOf(request))
 
         spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
+        return spreadsheet
+    }
+
+    fun initializeFirstTab(spreadsheetId: String, newName:String): BatchUpdateSpreadsheetResponse? {
+        var spreadsheet = BatchUpdateSpreadsheetResponse()
+        val sheet = sheets.spreadsheets().get(spreadsheetId).execute()
+
+        val sheetId = sheet.sheets[0].properties.sheetId
+
+
+
+        val request = Request().apply {
+            updateSheetProperties = UpdateSheetPropertiesRequest().apply {
+                this.properties = SheetProperties().apply {
+                    this.sheetId = sheetId
+                    this.title = newName
+                }
+            }
+        }
+
+        val batch = BatchUpdateSpreadsheetRequest().setRequests(listOf(request))
+
+        spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
+
+        val asd= writeSpreadSheet(spreadsheetId, "${newName}!A1:B1", mutableListOf(mutableListOf("Név", "Hányad")))
+
+        asd
+
         return spreadsheet
     }
 

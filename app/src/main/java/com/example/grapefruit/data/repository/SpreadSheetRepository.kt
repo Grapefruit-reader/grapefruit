@@ -1,6 +1,7 @@
 package com.example.grapefruit.data.repository
 
 import com.example.grapefruit.data.handleWithFlow
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse
 import com.google.api.services.sheets.v4.model.ValueRange
 import hu.blueberry.cloud.ResourceState
 import hu.blueberry.cloud.google.GoogleSheetsManager
@@ -13,5 +14,9 @@ class SpreadSheetRepository @Inject constructor(
 
     suspend fun readSpreadSheet(spreadSheetId:String, range:String): Flow<ResourceState<ValueRange?>> {
         return handleWithFlow { googleSheetsManager.readSpreadSheet(spreadSheetId,range) }
+    }
+
+    suspend fun initializeFirstTab(spreadSheetId:String, name:String): Flow<ResourceState<BatchUpdateSpreadsheetResponse?>> {
+       return  handleWithFlow { googleSheetsManager.initializeFirstTab(spreadSheetId,name) }
     }
 }

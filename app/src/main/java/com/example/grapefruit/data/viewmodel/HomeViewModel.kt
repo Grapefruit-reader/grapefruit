@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.grapefruit.data.handleWithFlow
 import com.example.grapefruit.data.repository.DriveRepository
+import com.example.grapefruit.data.repository.SpreadSheetRepository
 import com.example.grapefruit.model.MemoryDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.blueberry.cloud.ResourceState
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     var memoryDatabase: MemoryDatabase,
-    var driveRepository: DriveRepository
+    var driveRepository: DriveRepository,
+    var googleSheetRepository: SpreadSheetRepository
 ) : ViewModel(){
 
     private var _folder: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Loading())
@@ -44,6 +46,7 @@ class HomeViewModel @Inject constructor(
                 memoryDatabase.folderId = upsertFolder
                 val createSpreadSheet = createSpreadSheet(name)
                 memoryDatabase.spreadsheetId = createSpreadSheet
+                val afass = googleSheetRepository.initializeFirstTab(memoryDatabase.spreadsheetId!!,"Tulajdoni hányad munkalap")
             }.collectLatest {
                 when(it) {
                     is ResourceState.Success -> {
