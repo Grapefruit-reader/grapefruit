@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.R
 import com.example.grapefruit.data.viewmodel.DriveViewModel
+import com.example.grapefruit.data.viewmodel.HomeViewModel
 import com.example.grapefruit.navigation.AppNavigationGraph
 import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.ui.common.NormalTextField
@@ -47,10 +49,10 @@ import hu.blueberry.cloud.ResourceState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    driveViewModel: DriveViewModel = hiltViewModel(),
+    homeviewModel: HomeViewModel = hiltViewModel(),
     onNavigateToSpreadsheetTools: () -> Unit,
     ){
-    val fileResponse by driveViewModel.filename.collectAsState()
+    val fileResponse by homeviewModel.folder.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -90,7 +92,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(10.dp))
             Button(
             onClick = {
-                driveViewModel.createFolder(folderValue)
+                homeviewModel.upsertFolderFlow(folderValue)
             },
             modifier = Modifier.width(280.dp),
             )
@@ -101,12 +103,14 @@ fun HomeScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Status:")
                 when (fileResponse) {
-                    is ResourceState.Loading -> {
-                        Text(text = "Loading")
-                    }
-
                     is ResourceState.Success -> {
-                        Text(text = "Success")
+                        onNavigateToSpreadsheetTools()
+                    }
+                    is ResourceState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(40.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
                     }
 
                     is ResourceState.Error -> {
