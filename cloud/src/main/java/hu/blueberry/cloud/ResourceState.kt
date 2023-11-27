@@ -12,27 +12,3 @@ sealed class ResourceState<T> {
 }
 
 
-sealed class GoogleResponse<K> {
-
-    abstract val successful :Boolean
-
-    abstract val data: K?
-
-    abstract val exception: Exception?
-    class Successful<K>(override val data: K) : GoogleResponse<K>(){
-
-        override val exception:Exception?
-        get() = null
-
-        override val successful: Boolean
-            get() = true
-    }
-
-    class Error<K>(override val exception: Exception) : GoogleResponse<K>(){
-        override val successful: Boolean
-            get() = false
-
-        override val data:K?
-            get() = null
-    }
-}

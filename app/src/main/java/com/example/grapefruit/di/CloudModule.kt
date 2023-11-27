@@ -2,7 +2,7 @@ package com.example.grapefruit.di
 
 import android.content.Context
 import hu.blueberry.cloud.google.DriveManager
-import com.example.grapefruit.test.repository.DriveRepository
+import com.example.grapefruit.data.repository.DriveRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

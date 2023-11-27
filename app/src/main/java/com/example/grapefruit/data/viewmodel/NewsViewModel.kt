@@ -1,12 +1,10 @@
-package com.example.grapefruit.test.viewmodel
+package com.example.grapefruit.data.viewmodel
 
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.grapefruit.test.repository.DriveRepository
+import com.example.grapefruit.data.repository.DriveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.blueberry.cloud.ResourceState
-import io.opencensus.resource.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest

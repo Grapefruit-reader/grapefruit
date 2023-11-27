@@ -1,4 +1,4 @@
-package com.example.grapefruit.test.repository
+package com.example.grapefruit.data.repository
 
 import hu.blueberry.cloud.google.DriveManager
 

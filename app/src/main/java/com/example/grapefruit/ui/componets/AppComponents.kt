@@ -1,4 +1,4 @@
-package com.example.grapefruit.test.componets
+package com.example.grapefruit.ui.componets
 
 import androidx.compose.runtime.Composable
 

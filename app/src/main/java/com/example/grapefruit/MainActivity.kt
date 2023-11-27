@@ -15,9 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.grapefruit.navigation.NavGraph
-import com.example.grapefruit.test.navigation.AppNavigationGraph
+
+import com.example.grapefruit.navigation.AppNavigationGraph
 
 import com.example.grapefruit.ui.theme.ComposeBasicsTheme
 

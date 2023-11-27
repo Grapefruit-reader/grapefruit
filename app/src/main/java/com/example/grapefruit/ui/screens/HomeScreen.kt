@@ -1,4 +1,4 @@
-package com.example.grapefruit.test.screens
+package com.example.grapefruit.ui.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.grapefruit.test.viewmodel.DriveViewModel
+import com.example.grapefruit.data.viewmodel.DriveViewModel
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
 
@@ -25,7 +25,7 @@ fun HomeScreen(
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-
+        // Navigáció
     }
 
     Surface(
@@ -48,9 +48,14 @@ fun HomeScreen(
                         val intent = (error.error as UserRecoverableAuthIOException).intent
                         startNewActivityLauncher.launch(intent)
                     }
+                    else -> {
+
+                        //do something
+                    }
                 }
             }
-            
+
+            else -> {}
         }
 
     }

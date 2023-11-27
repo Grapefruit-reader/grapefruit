@@ -1,4 +1,4 @@
-package com.example.grapefruit.test.navigation
+package com.example.grapefruit.navigation
 
 object Routes {
 
