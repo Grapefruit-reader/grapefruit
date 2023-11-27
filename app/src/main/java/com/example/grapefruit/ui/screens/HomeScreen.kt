@@ -29,12 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.R
 import com.example.grapefruit.data.viewmodel.DriveViewModel
+import com.example.grapefruit.navigation.AppNavigationGraph
+import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.ui.common.NormalTextField
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
@@ -43,8 +47,9 @@ import hu.blueberry.cloud.ResourceState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    driveViewModel: DriveViewModel = hiltViewModel()
-){
+    driveViewModel: DriveViewModel = hiltViewModel(),
+    onNavigateToSpreadsheetTools: () -> Unit,
+    ){
     val fileResponse by driveViewModel.filename.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -53,15 +58,16 @@ fun HomeScreen(
     }
     var folderValue by remember { mutableStateOf("") }
     var isFolderValueError by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Add folder:"
+                text = "Add spreadsheet:"
             )
             Spacer(modifier = Modifier.height(60.dp))
             NormalTextField(
@@ -84,12 +90,13 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(10.dp))
             Button(
             onClick = {
-                driveViewModel.createFolder("New Folder")
+                //driveViewModel.createFolder(folderValue)
+                onNavigateToSpreadsheetTools()
             },
             modifier = Modifier.width(280.dp),
             )
             {
-                Text(text = "Create 'New Folder'")
+                Text(text = "Create Spreadsheet")
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
