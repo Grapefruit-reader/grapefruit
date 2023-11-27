@@ -1,4 +1,4 @@
-package com.example.grapefruit.cloud
+package hu.blueberry.cloud.google
 
 import android.content.Context
 import android.util.Log
@@ -10,21 +10,17 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
-import com.google.api.services.sheets.v4.SheetsScopes
+import com.google.api.services.sheets.v4.Sheets
 import dagger.hilt.android.qualifiers.ApplicationContext
-import hu.blueberry.googlesheetsintegrationapp.drive.base.CloudBase
-import java.util.Collections
+import hu.blueberry.cloud.google.base.CloudBase
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.concurrent.thread
 
 
 @Singleton
-class DriveManager constructor(
-    var context: Context,
+class DriveManager @Inject constructor(
+    private var cloudBase: CloudBase
 ) {
-
-    var cloudBase: CloudBase = CloudBase(context)
 
     var scopes = listOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA)
     companion object{
@@ -39,38 +35,48 @@ class DriveManager constructor(
     val drive: Drive
         get() = getDriveService()!!
 
-     private fun getDriveService(): Drive? {
-        GoogleSignIn.getLastSignedInAccount(context)?.let { googleAccount ->
-            val credential = GoogleAccountCredential.usingOAuth2(
-                context, listOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA)
-            )
-            credential.selectedAccount = googleAccount.account!!
-            return Drive.Builder(
-                NetHttpTransport(), GsonFactory.getDefaultInstance(),
-                credential
-            ).build()
-        }
-        return null
+
+    private fun getDriveService(): Drive? {
+        return Drive.Builder(
+            NetHttpTransport(), GsonFactory.getDefaultInstance(),
+            cloudBase.getCredentials(scopes)
+        ).build()
     }
 
 
-    fun createFolder(name:String, askPermission: (ex:UserRecoverableAuthIOException)->Unit): String? {
+//    fun createFolder(name:String/*, askPermission: (ex:UserRecoverableAuthIOException)->Unit*/): String? {
+//
+//        var folder = File()
+//         //   try {
+//                val folderData = File().apply {
+//                    this.name = name
+//                    this.mimeType = MimeType.FOLDER
+//                }
+//
+//                folder = drive.files().create(folderData).execute()
+//          /*  }catch (ex: UserRecoverableAuthIOException){
+//                Log.d("Folder", ex.message ?: "")
+//               // askPermission(ex)
+//
+//            }catch (ex: Exception){
+//                Log.d("Folder", ex.message ?: "")
+//            }*/
+//
+//        return folder.id
+//
+//
+//    }
 
-        var folder = File()
-            try {
-                val folderData = File().apply {
-                    this.name = name
-                    this.mimeType = MimeType.FOLDER
-                }
+    fun createFolder(name:String): String? {
 
-                folder = drive.files().create(folderData).execute()
-            }catch (ex: UserRecoverableAuthIOException){
-                Log.d("Folder", ex.message ?: "")
-                askPermission(ex)
+        val folder: File
 
-            }catch (ex: Exception){
-                Log.d("Folder", ex.message ?: "")
-            }
+        val folderData = File().apply {
+            this.name = name
+            this.mimeType = MimeType.FOLDER
+        }
+
+        folder = drive.files().create(folderData).execute()
 
         return folder.id
 

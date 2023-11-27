@@ -1,25 +1,19 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
 
 android {
-    namespace = "com.example.grapefruit"
+    namespace = "hu.blueberry.cloud"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.grapefruit"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,43 +32,20 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        compose = true
-    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/*"
-        }
     }
 }
 
 dependencies {
-    val composeBom = platform(Dependencies.composeBom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
 
-    implementation (Dependencies.material)
-    implementation(Dependencies.composeUi)
-    implementation(Dependencies.composeUiToolingPreview)
-    implementation(Dependencies.composeMaterial)
-
-    androidTestImplementation(Dependencies.composeTestJUnit4)
-    debugImplementation(Dependencies.composeTestManifest)
-    debugImplementation(Dependencies.composeUiTooling)
 
     implementation(Dependencies.coreKtx)
-    implementation(Dependencies.activityCompose)
-
-    implementation(Dependencies.navigationCompose)
-
+    implementation(Dependencies.appcompat)
+    //implementation(Dependencies.material) valami rossz ezzel idk mi
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.androidTest)
     androidTestImplementation(Dependencies.androidTestEspresso)
-
 
     //GoogleDrive
     implementation(Dependencies.googleDrive)
@@ -96,15 +67,6 @@ dependencies {
     implementation(Dependencies.dagger)
     kapt(Dependencies.androidCompiler)
     kapt(Dependencies.hiltCompiler)
-
-    //navigation compose
-    implementation(Dependencies.hiltNavigationCompose)
-
-    implementation(Dependencies.coroutinesCore)
-    implementation(Dependencies.coroutinesAndroid)
-
-    //Modules
-    implementation(project(Modules.cloud))
 }
 
 kapt{

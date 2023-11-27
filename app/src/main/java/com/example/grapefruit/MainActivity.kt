@@ -5,30 +5,33 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.navigation.NavGraph
-import com.example.grapefruit.ui.common.HomeScreen_Preview
-import com.example.grapefruit.ui.common.NormalTextView_Error_Preview
-import com.example.grapefruit.ui.common.NormalTextView_Preview
+import com.example.grapefruit.test.navigation.AppNavigationGraph
+
 import com.example.grapefruit.ui.theme.ComposeBasicsTheme
-import com.example.grapefruit.ui.theme.GrapefruitTheme
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Task
-import com.google.api.services.sheets.v4.SheetsScopes
 
+import com.google.android.gms.tasks.Task
+
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var mGoogleSignInClient : GoogleSignInClient? = null
 
@@ -47,9 +50,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent{
             ComposeBasicsTheme {
-                Greeting("Android")
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White))
+                    {
+                    AppEntryPoint()
+                }
             }
         }
+
+        //LOGIN
+
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         signedInAccount = GoogleSignIn.getLastSignedInAccount(this)
@@ -57,10 +69,15 @@ class MainActivity : ComponentActivity() {
             signIn()
         }
 
-        setContent {
+        setContent{
             ComposeBasicsTheme {
-                val navController = rememberNavController()
-                NavGraph(navController = navController)
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White))
+                {
+                    AppEntryPoint()
+                }
             }
         }
     }
@@ -87,13 +104,21 @@ class MainActivity : ComponentActivity() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             signedInAccount = completedTask.getResult(ApiException::class.java)
+            GoogleSignIn.getLastSignedInAccount(applicationContext)
 
             // Signed in successfully, show authenticated UI.
             //updateUI(account)
             setContent {
-                ComposeBasicsTheme {
-                    val navController = rememberNavController()
-                    NavGraph(navController = navController)
+                setContent{
+                    ComposeBasicsTheme {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.White))
+                        {
+                            AppEntryPoint()
+                        }
+                    }
                 }
             }
         } catch (e: ApiException) {
@@ -119,4 +144,9 @@ fun GreetingPreview() {
     ComposeBasicsTheme {
         Greeting("Android")
     }
+}
+
+@Composable
+fun AppEntryPoint(){
+    AppNavigationGraph()
 }
