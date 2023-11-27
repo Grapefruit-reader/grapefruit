@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     var googleSheetRepository: SpreadSheetRepository
 ) : ViewModel(){
 
-    private var _folder: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Loading())
+    private var _folder: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Initial())
     val folder : StateFlow<ResourceState<String>> = _folder
 
     private suspend fun upsertFolder():String {

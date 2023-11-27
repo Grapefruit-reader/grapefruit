@@ -167,9 +167,8 @@ class GoogleSheetsManager @Inject constructor(
 
         spreadsheet = sheets.spreadsheets().batchUpdate(spreadsheetId, batch).execute()
 
-        val asd= writeSpreadSheet(spreadsheetId, "${newName}!A1:B1", mutableListOf(mutableListOf("Név", "Hányad")))
+        writeSpreadSheet(spreadsheetId, "${newName}!A1:B1", mutableListOf(mutableListOf("Név", "Hányad")))
 
-        asd
 
         return spreadsheet
     }

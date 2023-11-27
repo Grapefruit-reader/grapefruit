@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.grapefruit.data.handleWithFlow
 import com.example.grapefruit.data.repository.SpreadSheetRepository
 import com.example.grapefruit.model.MemoryDatabase
-import com.google.api.services.sheets.v4.model.ValueRange
+import com.example.grapefruit.model.User
+import com.example.grapefruit.utils.generatePdf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.blueberry.cloud.ResourceState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -18,29 +18,41 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SpreadSheetViewModel @Inject constructor(
-    var memoryDatabase: MemoryDatabase,
-    var spreadSheetRepository: SpreadSheetRepository
+    private var memoryDatabase: MemoryDatabase,
+    private var spreadSheetRepository: SpreadSheetRepository
 ): ViewModel(){
 
-    private var _sheet: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Loading())
+    private var _sheet: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Initial())
     val sheet : StateFlow<ResourceState<String>> = _sheet
 
      fun readSpreadSheet( range:String) {
          viewModelScope.launch {
-             spreadSheetRepository.readSpreadSheet(memoryDatabase.spreadsheetId ?: "", range ).collectLatest {
+             spreadSheetRepository.readSpreadSheet(memoryDatabase.spreadsheetId ?: "", range ).collectLatest { it ->
                  when(it) {
                      is ResourceState.Success-> {
-                         it.data?.values?.forEach{
-                             Log.d("Sheet", it.toString())
+                         val rawData = it.data?.values.toString()
+
+                         val innerLists = rawData
+                             .substringAfter("[[")
+                             .substringBeforeLast("]]]")
+                             .split("], [")
+
+                         val userList = innerLists.map { row ->
+                             val (name,share) = row.split(",")
+                             User(name, share.toDoubleOrNull() ?:0.0)
                          }
+
+                         memoryDatabase.userList.addAll(userList)
+                         _sheet.value = ResourceState.Success(data = "Success")
+
                      }
+
                      is ResourceState.Loading -> {
                          Log.i("Sheet", "Loading")
                      }
                      is ResourceState.Error -> {
                          _sheet.value = ResourceState.Error((it).error)
                      }
-
                      else -> {
                          Log.i("Sheet" , "Else")
                      }
@@ -48,6 +60,10 @@ class SpreadSheetViewModel @Inject constructor(
              }
          }
 
+    }
+
+    fun generatePdf(title:String, fileName:String) {
+        generatePdf(memoryDatabase.userList, title, fileName)
     }
 
     fun readSpreadSheetFlow(range:String) {

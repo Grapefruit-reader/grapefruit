@@ -29,7 +29,7 @@ private const val RIGHT_MARGIN = 656F
 private const val INFO_X_OFFSET_ODD = 170F
 private const val INFO_X_OFFSET_EVEN = 770F
 
-fun generatePdf(context: Context, userList:List<User>, title:String, fileName:String){
+fun generatePdf(userList:List<User>, title:String, fileName:String){
     try {
         val bitMaps = generateQRCodes(userList)
         val document = PdfDocument()
@@ -40,7 +40,7 @@ fun generatePdf(context: Context, userList:List<User>, title:String, fileName:St
         drawHeader(canvas, title)
         drawQRCodeAndInfo(canvas,bitMaps, userList)
         document.finishPage(page)
-        savePdfDocument(context,document,fileName)
+        savePdfDocument(document,fileName)
     } catch (e: WriterException) {
         e.printStackTrace();
     }
@@ -87,12 +87,11 @@ fun drawQRCodeAndInfo(canvas: Canvas, bitMaps: List<Bitmap>, userList: List<User
     }
 }
 
-fun savePdfDocument(context: Context, document: PdfDocument, fileName: String) {
+fun savePdfDocument( document: PdfDocument, fileName: String) {
     val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val file = File(folder, "${fileName}.pdf")
     try {
         document.writeTo(FileOutputStream(file))
-        Toast.makeText(context, "PDF file generated successfully.", Toast.LENGTH_SHORT).show()
     } catch (e: IOException) {
         e.printStackTrace()
     } finally {

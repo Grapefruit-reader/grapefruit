@@ -91,19 +91,20 @@ fun HomeScreen(
                 onDone = { }
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-            onClick = {
-                homeviewModel.upsertFolderFlow(folderValue)
-            },
-            modifier = Modifier.width(280.dp),
-            )
-            {
-                Text(text = "Create Spreadsheet")
-            }
-            Spacer(modifier = Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Status:")
                 when (fileResponse) {
+                    is ResourceState.Initial -> {
+                        Button(
+                            onClick = {
+                                homeviewModel.upsertFolderFlow(folderValue)
+                            },
+                            modifier = Modifier.width(280.dp),
+                        )
+                        {
+                            Text(text = "Create Spreadsheet")
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                     is ResourceState.Success -> {
                         onNavigateToSpreadsheetTools()
                     }
