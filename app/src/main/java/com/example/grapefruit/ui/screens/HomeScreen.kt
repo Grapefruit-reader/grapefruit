@@ -1,5 +1,6 @@
 package com.example.grapefruit.ui.screens
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -122,6 +123,7 @@ fun HomeScreen(
                             }
 
                             else -> {
+                                Log.d("InitTab", error.error.toString())
 
                                 //do something
                             }

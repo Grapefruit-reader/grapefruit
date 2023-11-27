@@ -46,7 +46,7 @@ class HomeViewModel @Inject constructor(
                 memoryDatabase.folderId = upsertFolder
                 val createSpreadSheet = createSpreadSheet(name)
                 memoryDatabase.spreadsheetId = createSpreadSheet
-                val afass = googleSheetRepository.initializeFirstTab(memoryDatabase.spreadsheetId!!,"Tulajdoni hányad munkalap")
+                googleSheetRepository.initializeFirstTab(memoryDatabase.spreadsheetId!!,"Tulajdoni hányad munkalap")
             }.collectLatest {
                 when(it) {
                     is ResourceState.Success -> {

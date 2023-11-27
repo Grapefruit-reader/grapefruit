@@ -159,6 +159,7 @@ class GoogleSheetsManager @Inject constructor(
                     this.sheetId = sheetId
                     this.title = newName
                 }
+                this.fields = "title"
             }
         }
 
