@@ -33,7 +33,7 @@ fun generatePdf(userList:List<User>, title:String, fileName:String): File? {
         val bitMaps = generateQRCodes(userList)
         val document = PdfDocument()
         val rowCount = ceil(userList.size.toDouble() / 2).toInt()
-        val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, rowCount * PAGE_HEIGHT + HEADER_HEIGHT, 1).create()
+        val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT + rowCount * QR_CODE_HEIGHT, 1).create()
         val page = document.startPage(pageInfo)
         val canvas = page.canvas
         drawHeader(canvas, title)
@@ -80,6 +80,7 @@ fun drawQRCodeAndInfo(canvas: Canvas, bitMaps: List<Bitmap>, userList: List<User
         val label = "Név: ${userList[index].name}; Hányad: ${userList[index].share}%"
         val xPos = if (index % 2 == 0) LEFT_MARGIN else RIGHT_MARGIN
         val textXPost = if (index % 2 == 0) INFO_X_OFFSET_ODD else INFO_X_OFFSET_EVEN
+        if(index %2 == 0 ) top += INFO_TEXT_SIZE
         canvas.drawBitmap(it, xPos, top, paint)
         top += QR_CODE_HEIGHT
         canvas.drawText(label, textXPost, top, info)
