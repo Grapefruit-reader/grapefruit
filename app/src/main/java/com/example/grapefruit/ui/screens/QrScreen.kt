@@ -139,7 +139,7 @@ fun QrScreen(
             if(code == ""){
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { navController.navigate(Routes.TOPIC_SCREEN)}
+                    onClick = { navController.popBackStack()}
                 ) {
                     Text(text = "End topic")
                 }

@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,17 +30,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.R
-import com.example.grapefruit.data.viewmodel.DriveViewModel
 import com.example.grapefruit.data.viewmodel.TopicViewModel
 import com.example.grapefruit.navigation.Routes
+import com.example.grapefruit.ui.common.ButtonList
 import com.example.grapefruit.ui.common.NormalTextField
 import hu.blueberry.cloud.ResourceState
 
@@ -54,29 +53,46 @@ fun TopicScreen(
 
     val worksheetList = topicViewModel.voteWorksheets.collectAsState()
 
-        @Composable
-        fun ScrollableList(){
-            Column (modifier = Modifier
-                .height(400.dp)
-                .verticalScroll(
-                    rememberScrollState()
-                ), horizontalAlignment = Alignment.CenterHorizontally) {
+    @Composable
+    fun ScrollableList() {
 
-                Text(
-                    text = "Choose a Topic",
-                    fontSize = 25.sp
-                )
+        Column (horizontalAlignment = Alignment.CenterHorizontally){
 
-                when(worksheetList.value){
+
+            Text(
+                text = "Choose a Topic",
+                fontSize = 25.sp
+            )
+
+            Spacer(modifier = Modifier.fillMaxHeight(0.05f))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(0.3f)
+                    .verticalScroll(
+                        rememberScrollState()
+                    ), horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+
+                when (worksheetList.value) {
                     is ResourceState.Success -> {
-                        for (sheet in (worksheetList.value as ResourceState.Success<MutableList<String>>).data) {
-                            Button(onClick = {
-                                topicViewModel.chooseWorksheet(sheet)
+
+                        ButtonList(
+                            list = (worksheetList.value as ResourceState.Success<MutableList<String>>).data,
+                            onButtonClick = {
+                                topicViewModel.chooseWorksheet(it)
                                 navController.navigate(Routes.QR_SCREEN)
-                            }) {
-                                Text(text = sheet)
-                            }
-                        }
+                            },
+                            style = {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                {
+                                    Text(text = it)
+                                }
+                            })
                     }
 
                     else -> {
@@ -86,67 +102,86 @@ fun TopicScreen(
 
             }
         }
+    }
 
-        @Composable
-        fun Createtopic(){
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Create Topic",
-                    fontSize = 25.sp
+    @Composable
+    fun WorksheetInputTextField() {
+        NormalTextField(
+            value = createWorksheetValue,
+            label = stringResource(id = R.string.textfield_label_worksheetname),
+            onValueChange = { newValue ->
+                isWorksheetValueError =
+                    (worksheetList.value as ResourceState.Success<MutableList<String>>).data.contains(
+                        newValue
+                    )
+                createWorksheetValue = newValue
+            },
+            isError = isWorksheetValueError,
+            errorMessage = stringResource(id = R.string.error_message_name_taken),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Folder,
+                    contentDescription = null
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+            },
+            trailingIcon = { },
+            onDone = { }
+        )
+    }
 
-                NormalTextField(
-                    value = createWorksheetValue,
-                    label = stringResource(id = R.string.textfield_label_worksheetname),
-                    onValueChange = { newValue ->
-                        isWorksheetValueError = (worksheetList.value as ResourceState.Success<MutableList<String>>).data.contains(newValue)
-                        createWorksheetValue = newValue
-                    },
-                    isError = isWorksheetValueError,
-                    errorMessage = stringResource(id = R.string.error_message_name_taken),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Folder,
-                            contentDescription = null
-                        )
-                    },
-                    trailingIcon = { },
-                    onDone = { }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Button(
-                    enabled = !isWorksheetValueError,
-                    onClick = {
-                        topicViewModel.createNewWorkSheet(createWorksheetValue)
-                        navController.navigate(Routes.QR_SCREEN)
-                    }
-                )
-                {
-                    Text(text = "Create Topic")
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = { navController.popBackStack()}
-                )
-                {
-                    Text(text = "Back")
-                }
-
+    @Composable
+    fun CreateTopicButton() {
+        Button(
+            enabled = !isWorksheetValueError,
+            onClick = {
+                topicViewModel.createNewWorkSheet(createWorksheetValue)
+                navController.navigate(Routes.QR_SCREEN)
             }
+        )
+        {
+            Text(text = "Create Topic")
         }
+    }
+
+    @Composable
+    fun Createtopic() {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Text(
+                text = "Create Topic",
+                fontSize = 25.sp
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            WorksheetInputTextField()
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            CreateTopicButton()
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = { navController.popBackStack() }
+            )
+            {
+                Text(text = "Back")
+            }
+
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ) {
-        Column (
-            Modifier.height(800.dp),
+        Column(
+            Modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
-        ){
+        ) {
 
             ScrollableList()
 
