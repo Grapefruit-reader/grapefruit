@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.ui.screens.HomeScreen
+import com.example.grapefruit.ui.screens.QrScreen
 import com.example.grapefruit.ui.screens.SpreadsheetToolsScreen
 import com.example.grapefruit.ui.screens.TopicScreen
 
@@ -32,8 +33,9 @@ fun AppNavigationGraph(){
             TopicScreen()
         }
 
-
-
+        composable(Routes.QR_SCREEN){
+            QrScreen()
+        }
     }
 
 }
