@@ -58,7 +58,6 @@ fun HomeScreen(
     }
     var folderValue by remember { mutableStateOf("") }
     var isFolderValueError by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -111,7 +110,6 @@ fun HomeScreen(
                             color = MaterialTheme.colorScheme.secondary,
                         )
                     }
-
                     is ResourceState.Error -> {
                         val error = fileResponse as ResourceState.Error<String?>
                         when (error.error) {

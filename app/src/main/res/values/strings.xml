@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">compose-basics</string>
+    <string name="app_name">Grapefruit</string>
     <string name="textfield_label_email">email</string>
     <string name="textfield_label_password">password</string>
     <string name="button_label_login">Log in</string>

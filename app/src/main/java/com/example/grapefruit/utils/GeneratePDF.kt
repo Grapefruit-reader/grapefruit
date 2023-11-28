@@ -1,12 +1,10 @@
 package com.example.grapefruit.utils
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.os.Environment
-import android.widget.Toast
 import com.example.grapefruit.model.User
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter

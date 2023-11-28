@@ -1,6 +1,7 @@
 package com.example.grapefruit.ui.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,7 +42,7 @@ fun SpreadsheetToolsScreen (
     }
 
     val name = "Spreadsheet name" //TODO: viewmodelből szeretném megkapni
-    var rows = "0"
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -95,8 +97,7 @@ fun SpreadsheetToolsScreen (
                         }
 
                         else -> {
-
-                            //do something
+                            Toast.makeText(context, error.error.toString(), Toast.LENGTH_LONG).show()
                         }
                     }
                 }

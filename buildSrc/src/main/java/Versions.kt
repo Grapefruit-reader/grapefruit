@@ -20,4 +20,8 @@ object Versions {
     const val coroutines = "1.7.3"
     const val splashScreen = "1.0.1"
     const val QRCode = "4.1.0"
+    const val QRZxingCore = "3.3.3"
+    const val cameraCamera2 = "1.3.0"
+    const val cameraLifecycle = "1.3.0"
+    const val cameraView = "1.4.0"
 }

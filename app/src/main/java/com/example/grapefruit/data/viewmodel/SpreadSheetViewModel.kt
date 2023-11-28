@@ -8,7 +8,6 @@ import com.example.grapefruit.data.repository.DriveRepository
 import com.example.grapefruit.data.repository.SpreadSheetRepository
 import com.example.grapefruit.model.MemoryDatabase
 import com.example.grapefruit.model.User
-import com.example.grapefruit.utils.generatePdf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.blueberry.cloud.ResourceState
 import hu.blueberry.cloud.google.DriveManager

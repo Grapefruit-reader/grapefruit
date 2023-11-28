@@ -18,7 +18,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.grapefruit.data.viewmodel.DriveViewModel
 
 @Composable
-fun TopicScreen (driveViewModel: DriveViewModel = hiltViewModel()){
+fun TopicScreen (
+    driveViewModel: DriveViewModel = hiltViewModel(),
+    onNavigateToSpreadsheetTools: () -> Unit,
+    onNavigateToQR:() -> Unit
+){
     val topicName = "Topic name" //TODO: viewmodelből szeretném megkapni
 
     Box(
@@ -32,14 +36,18 @@ fun TopicScreen (driveViewModel: DriveViewModel = hiltViewModel()){
             )
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = {}
+                onClick = {
+                    onNavigateToQR()
+                }
             )
             {
                 Text(text = topicName)
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = {}
+                onClick = {
+                    onNavigateToSpreadsheetTools()
+                }
             )
             {
                 Text(text = "Back")

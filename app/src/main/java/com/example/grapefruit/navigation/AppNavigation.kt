@@ -1,5 +1,7 @@
 package com.example.grapefruit.navigation
 
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,7 +12,7 @@ import com.example.grapefruit.ui.screens.QrScreen
 import com.example.grapefruit.ui.screens.SpreadsheetToolsScreen
 import com.example.grapefruit.ui.screens.TopicScreen
 
-@Composable
+@OptIn(ExperimentalGetImage::class) @Composable
 fun AppNavigationGraph(){
 
     val navController : NavHostController = rememberNavController()
@@ -30,11 +32,16 @@ fun AppNavigationGraph(){
         }
 
         composable(Routes.TOPIC_SCREEN){
-            TopicScreen()
+            TopicScreen(
+                onNavigateToSpreadsheetTools = {navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)},
+                onNavigateToQR = {navController.navigate(Routes.QR_SCREEN)}
+            )
         }
 
         composable(Routes.QR_SCREEN){
-            QrScreen()
+            QrScreen(
+                onNavigateToSpreadsheetTools = {navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)}
+            )
         }
     }
 

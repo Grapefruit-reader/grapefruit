@@ -1,7 +1,9 @@
 package com.example.grapefruit.data.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.grapefruit.data.handleResponse
 import com.example.grapefruit.data.repository.VoteRepository
 import com.example.grapefruit.model.MemoryDatabase
 import com.example.grapefruit.model.User
@@ -9,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.blueberry.cloud.ResourceState
 import hu.blueberry.cloud.google.GoogleSheetsManager
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,9 @@ class WriteVoteViewModel @Inject constructor(
     private var memoryDatabase: MemoryDatabase
 ): ViewModel(){
 
+    init {
+        memoryDatabase.workSheet = "Teszt"
+    }
     var user : MutableStateFlow<User?> = MutableStateFlow(null)
 
     fun setData(user:User){
@@ -39,8 +45,8 @@ class WriteVoteViewModel @Inject constructor(
         const val RESIDE_RANGE = "G:H"
     }
 
-    private var voteWriting : MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Initial())
-
+    private var _voteWriting : MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Initial())
+    var voteWriting : StateFlow<ResourceState<String>> = _voteWriting
 
     fun writeFromData(func : (user:User) -> Unit){
         user.value?.let {
@@ -57,10 +63,16 @@ class WriteVoteViewModel @Inject constructor(
         buttonState.value =  ButtonStates.DISABLED
 
         val values = mutableListOf(mutableListOf<Any>(name, share))
-        val range = memoryDatabase.workSheet + Ranges.YES_RANGE
+        val range = memoryDatabase.workSheet + "!" + Ranges.YES_RANGE
 
         viewModelScope.launch {
-            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values)
+            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values).collectLatest { it ->
+                handleResponse(it,
+                    onSuccess = {_voteWriting.value = ResourceState.Success(data = "Success")},
+                    onLoading = { _voteWriting.value = ResourceState.Loading()},
+                    onError = {error -> _voteWriting.value = ResourceState.Error(error)}
+                )
+            }
         }
     }
 
@@ -68,10 +80,16 @@ class WriteVoteViewModel @Inject constructor(
         buttonState.value =  ButtonStates.DISABLED
 
         val values = mutableListOf(mutableListOf<Any>(name, share))
-        val range = memoryDatabase.workSheet + Ranges.NO_RANGE
+        val range = memoryDatabase.workSheet + "!" + Ranges.NO_RANGE
 
         viewModelScope.launch {
-            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values)
+            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values).collectLatest {
+                handleResponse(it,
+                    onSuccess = {_voteWriting.value = ResourceState.Success(data = "Success")},
+                    onLoading = { _voteWriting.value = ResourceState.Loading()},
+                    onError = {error -> _voteWriting.value = ResourceState.Error(error)}
+                )
+            }
         }
     }
 
@@ -79,10 +97,16 @@ class WriteVoteViewModel @Inject constructor(
         buttonState.value =  ButtonStates.DISABLED
 
         val values = mutableListOf(mutableListOf<Any>(name, share))
-        val range = memoryDatabase.workSheet + Ranges.RESIDE_RANGE
+        val range = memoryDatabase.workSheet + "!" + Ranges.RESIDE_RANGE
 
         viewModelScope.launch {
-            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values)
+            voteRepository.appendToSpreadSheet(memoryDatabase.spreadsheetId!!,range, values).collectLatest {
+                handleResponse(it,
+                    onSuccess = {_voteWriting.value = ResourceState.Success(data = "Success")},
+                    onLoading = { _voteWriting.value = ResourceState.Loading()},
+                    onError = {error -> _voteWriting.value = ResourceState.Error(error)}
+                )
+            }
         }
     }
 

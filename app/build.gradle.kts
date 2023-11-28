@@ -53,9 +53,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.camera:camera-core:1.3.0")
-    implementation("androidx.camera:camera-lifecycle:1.3.0")
-    implementation("androidx.camera:camera-view:1.3.0")
+
     val composeBom = platform(Dependencies.composeBom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -108,6 +106,12 @@ dependencies {
 
     implementation(Dependencies.splashScreen)
     implementation(Dependencies.QRCode)
+    implementation(Dependencies.QRZxingCore)
+    implementation ("com.google.mlkit:barcode-scanning:17.2.0")
+
+    implementation(Dependencies.cameraCamera2)
+    implementation(Dependencies.cameraLifecycle)
+    implementation(Dependencies.cameraView)
 
     //Modules
     implementation(project(Modules.cloud))

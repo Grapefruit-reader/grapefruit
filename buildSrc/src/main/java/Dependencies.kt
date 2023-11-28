@@ -36,6 +36,12 @@ object Dependencies {
 
     val splashScreen by lazy {"androidx.core:core-splashscreen:${Versions.splashScreen}"}
     val QRCode by lazy {"com.journeyapps:zxing-android-embedded:${Versions.QRCode}"}
+    val QRZxingCore by lazy {"com.google.zxing:core:${Versions.QRZxingCore}"}
+
+    val cameraCamera2 by lazy {"androidx.camera:camera-camera2:${Versions.cameraCamera2}"}
+    val cameraLifecycle by lazy {"androidx.camera:camera-lifecycle:${Versions.cameraLifecycle}"}
+    val cameraView by lazy {"androidx.camera:camera-view:${Versions.cameraView}-alpha02"}
+
 }
 
 object Modules{
