@@ -72,15 +72,17 @@ fun SpreadsheetToolsScreen (
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = {}
+                onClick = {
+                    Log.d("Sheet", "generate")
+                    spreadSheetViewModel.uploadPdf()
+                }
             )
             {
                 Text(text = "Print")
             }
             when (sheet) {
                 is ResourceState.Success -> {
-                    Log.d("Sheet", "generate")
-                   spreadSheetViewModel.generatePdf("teszt", "Teszt")
+
                 }
                 is ResourceState.Loading -> {
                 }
