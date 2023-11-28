@@ -19,4 +19,12 @@ class SpreadSheetRepository @Inject constructor(
     suspend fun initializeFirstTab(spreadSheetId:String, name:String): BatchUpdateSpreadsheetResponse? {
        return googleSheetsManager.initializeFirstTab(spreadSheetId,name)
     }
+
+    suspend fun createWorksheet(spreadSheetId: String, name: String): Flow<ResourceState<BatchUpdateSpreadsheetResponse>> {
+        return handleWithFlow { googleSheetsManager.createNewWorksheet(spreadSheetId, name) }
+    }
+
+    suspend fun listWorksheetNames(spreadSheetId: String): Flow<ResourceState<List<String>>> {
+        return handleWithFlow { googleSheetsManager.listWorkSheetNames(spreadSheetId) }
+    }
 }

@@ -33,8 +33,7 @@ fun AppNavigationGraph(){
 
         composable(Routes.TOPIC_SCREEN){
             TopicScreen(
-                onNavigateToSpreadsheetTools = {navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)},
-                onNavigateToQR = {navController.navigate(Routes.QR_SCREEN)}
+                navController
             )
         }
 

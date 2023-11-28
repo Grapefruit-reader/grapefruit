@@ -1,6 +1,7 @@
 package com.example.grapefruit.data
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import hu.blueberry.cloud.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,3 +36,4 @@ fun <T> handleResponse(
         is ResourceState.Error -> onError(resource.error)
     }
 }
+

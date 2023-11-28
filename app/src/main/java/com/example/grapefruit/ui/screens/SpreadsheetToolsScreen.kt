@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.grapefruit.data.viewmodel.SpreadSheetViewModel
 import com.example.grapefruit.model.MemoryDatabase
+import com.example.grapefruit.model.StringValues
 import com.example.grapefruit.utils.generatePdf
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
@@ -66,7 +67,7 @@ fun SpreadsheetToolsScreen (
 
             Button(
                 onClick = {
-                    spreadSheetViewModel.readSpreadSheet("A2:B")
+                    spreadSheetViewModel.readSpreadSheet("${StringValues.FIRST_PAGE_NAME}!A2:B")
                 }
             )
             {

@@ -4,6 +4,7 @@
     <string name="textfield_label_password">password</string>
     <string name="button_label_login">Log in</string>
     <string name="textfield_label_foldername">spreadsheet\'s name</string>
+    <string name="textfield_label_worksheetname">worksheet\'s name</string>
     <string name="snackbar_message_this_is_a">This is a Snackbar</string>
     <string name="top_app_bar_title_home">Home</string>
     <string name="button_label_logout">Log out</string>

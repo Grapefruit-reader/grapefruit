@@ -55,7 +55,6 @@ class GoogleSheetsManager @Inject constructor(
 
 
         return spreadsheet.spreadsheetId
-
     }
 
     fun readSpreadSheet(
@@ -107,7 +106,7 @@ class GoogleSheetsManager @Inject constructor(
         return result
     }
 
-    fun createNewTab(spreadsheetId: String, name: String): BatchUpdateSpreadsheetResponse {
+    fun createNewWorksheet(spreadsheetId: String, name: String): BatchUpdateSpreadsheetResponse {
         var spreadsheet:BatchUpdateSpreadsheetResponse = BatchUpdateSpreadsheetResponse()
            val request = Request()
                .setAddSheet(
@@ -123,7 +122,7 @@ class GoogleSheetsManager @Inject constructor(
         return spreadsheet
     }
 
-    fun renameTab(spreadsheetId: String, oldName: String, newName:String): BatchUpdateSpreadsheetResponse? {
+    fun renameWorksheet(spreadsheetId: String, oldName: String, newName:String): BatchUpdateSpreadsheetResponse? {
         var spreadsheet = BatchUpdateSpreadsheetResponse()
         val sheet = sheets.spreadsheets().get(spreadsheetId).execute()
 
@@ -173,5 +172,11 @@ class GoogleSheetsManager @Inject constructor(
         return spreadsheet
     }
 
+
+    fun listWorkSheetNames(spreadsheetId: String): List<String> {
+
+        val spreadsheet = sheets.spreadsheets().get(spreadsheetId).execute()
+        return spreadsheet.sheets.map { it.properties.title }
+    }
 
 }
