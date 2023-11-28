@@ -40,8 +40,8 @@ fun SpreadsheetToolsScreen (
     val sheet by spreadSheetViewModel.sheet.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        // Navigáció
+    ) {
+        navController.navigate(Routes.HOME_SCREEN)
     }
 
     val name = "Spreadsheet name" //TODO: viewmodelből szeretném megkapni

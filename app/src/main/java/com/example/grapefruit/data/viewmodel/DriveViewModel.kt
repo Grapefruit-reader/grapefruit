@@ -12,20 +12,3 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-@HiltViewModel
-class DriveViewModel @Inject constructor(
-    var driveRepository: DriveRepository
-) : ViewModel(){
-
-    private var _filename: MutableStateFlow<ResourceState<String>> = MutableStateFlow(ResourceState.Loading())
-    val filename : StateFlow<ResourceState<String>> = _filename
-    fun createFolder(name: String){
-        viewModelScope.launch {
-            driveRepository.createFolder(name)
-                .collectLatest {
-                    fileName ->
-                    _filename.value = fileName
-                }
-        }
-    }
-}

@@ -17,13 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,18 +32,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.R
-import com.example.grapefruit.data.viewmodel.DriveViewModel
 import com.example.grapefruit.data.viewmodel.HomeViewModel
 import com.example.grapefruit.model.FileInfo
-import com.example.grapefruit.navigation.AppNavigationGraph
 import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.ui.common.ButtonList
 import com.example.grapefruit.ui.common.NormalTextField
@@ -62,8 +56,8 @@ fun HomeScreen(
     val fileResponse by homeviewModel.folder.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        // Navigáció
+    ) {
+        navController.navigate(Routes.HOME_SCREEN)
     }
     var folderValue by remember { mutableStateOf("") }
     var isFolderValueError by remember { mutableStateOf(false) }

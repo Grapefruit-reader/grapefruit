@@ -55,8 +55,8 @@ fun QrScreen(
 
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        // Navigáció
+    ) {
+        navController.navigate(Routes.HOME_SCREEN)
     }
 
     fun readUserData( rawData:String) {
@@ -139,7 +139,7 @@ fun QrScreen(
             if(code == ""){
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { navController.popBackStack()}
+                    onClick = { navController.popBackStack() }
                 ) {
                     Text(text = "End topic")
                 }

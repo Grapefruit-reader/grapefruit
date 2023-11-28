@@ -53,12 +53,6 @@ class WriteVoteViewModel @Inject constructor(
            func(it)
         }
     }
-
-    fun writeYesFromData() = writeFromData { user -> writeYes(user.name,user.share ) }
-    fun writeNoFromData() = writeFromData { user -> writeNo(user.name,user.share ) }
-    fun writeResidesFromData() = writeFromData { user -> writeResides(user.name,user.share ) }
-
-
     fun writeYes(name:String, share:Double){
         buttonState.value =  ButtonStates.DISABLED
 
