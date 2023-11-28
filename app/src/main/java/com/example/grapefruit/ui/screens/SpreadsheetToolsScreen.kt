@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,10 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.grapefruit.data.viewmodel.SpreadSheetViewModel
-import com.example.grapefruit.model.MemoryDatabase
 import com.example.grapefruit.model.StringValues
 import com.example.grapefruit.navigation.Routes
-import com.example.grapefruit.utils.generatePdf
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
 
@@ -46,6 +46,9 @@ fun SpreadsheetToolsScreen (
 
     val name = "Spreadsheet name" //TODO: viewmodelből szeretném megkapni
     val context = LocalContext.current
+    var hasReadSheet by remember {
+        mutableStateOf(false)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -66,23 +69,38 @@ fun SpreadsheetToolsScreen (
                 Text(text = "Topic")
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                onClick = {
-                    spreadSheetViewModel.readSpreadSheet("${StringValues.FIRST_PAGE_NAME}!A2:B")
+            if(!hasReadSheet) {
+                Button(
+                    onClick = {
+                        hasReadSheet = true
+                        spreadSheetViewModel.readSpreadSheet("${StringValues.FIRST_PAGE_NAME}!A2:B")
+                    }
+                )
+                {
+                    Text(text = "Read")
                 }
-            )
-            {
-                Text(text = "Read")
+            }
+            if(hasReadSheet) {
+                Button(
+                    onClick = {
+                        hasReadSheet = false
+                        Log.d("Sheet", "generate")
+                        spreadSheetViewModel.uploadPdf()
+                    }
+                )
+                {
+                    Text(text = "Print")
+                }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
-                    Log.d("Sheet", "generate")
-                    spreadSheetViewModel.uploadPdf()
+                    hasReadSheet = false
+                    navController.popBackStack()
                 }
             )
             {
-                Text(text = "Print")
+                Text(text = "Back")
             }
             when (sheet) {
                 is ResourceState.Success -> {
