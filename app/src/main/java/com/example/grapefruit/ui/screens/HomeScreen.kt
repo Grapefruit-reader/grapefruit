@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.grapefruit.R
 import com.example.grapefruit.data.viewmodel.DriveViewModel
@@ -47,8 +48,8 @@ import hu.blueberry.cloud.ResourceState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     homeviewModel: HomeViewModel = hiltViewModel(),
-    onNavigateToSpreadsheetTools: () -> Unit,
     ){
     val fileResponse by homeviewModel.folder.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
@@ -102,7 +103,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                     is ResourceState.Success -> {
-                        onNavigateToSpreadsheetTools()
+                        navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)
                     }
                     is ResourceState.Loading -> {
                         CircularProgressIndicator(

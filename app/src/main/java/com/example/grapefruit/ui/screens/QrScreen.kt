@@ -1,8 +1,6 @@
 package com.example.grapefruit.ui.screens
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +10,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,12 +18,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,24 +30,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.grapefruit.data.handleResponse
 import com.example.grapefruit.data.viewmodel.WriteVoteViewModel
 import com.example.grapefruit.model.User
+import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.utils.BarcodeAnalyser
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import hu.blueberry.cloud.ResourceState
 import java.util.concurrent.Executors
 
 @androidx.camera.core.ExperimentalGetImage
 @Composable
 fun QrScreen(
-    writeVoteViewModel: WriteVoteViewModel = hiltViewModel(),
-    onNavigateToSpreadsheetTools: ()-> Unit
+    navController: NavController,
+    writeVoteViewModel: WriteVoteViewModel = hiltViewModel()
 ) {
     var code by remember { mutableStateOf("")}
     val voteResult by writeVoteViewModel.voteWriting.collectAsState()
@@ -125,7 +119,6 @@ fun QrScreen(
                         .build()
                         .also {
                             it.setAnalyzer(cameraExecutor, BarcodeAnalyser{
-                                Log.d("Barcode", it)
                                 code = it
                             })
                         }
@@ -146,7 +139,7 @@ fun QrScreen(
             if(code == ""){
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateToSpreadsheetTools()}
+                    onClick = { navController.navigate(Routes.TOPIC_SCREEN)}
                 ) {
                     Text(text = "End topic")
                 }
@@ -172,86 +165,9 @@ fun QrScreen(
                             Text("Resides")
                         }
                     }
-
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
-
-//@Composable
-//fun QrScreen (driveViewModel: DriveViewModel = hiltViewModel()){
-//    var code by remember {
-//        mutableStateOf("")
-//    }
-//    val context = LocalContext.current
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//    val cameraProviderFuture = remember {
-//        ProcessCameraProvider.getInstance(context)
-//    }
-//    var hasCameraPermission by remember {
-//        mutableStateOf(
-//            ContextCompat.checkSelfPermission(
-//                context,
-//                android.Manifest.permission.CAMERA
-//            ) == PackageManager.PERMISSION_GRANTED
-//        )
-//    }
-//    val launcher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.RequestPermission(),
-//        onResult = { granted ->
-//            hasCameraPermission = granted
-//        }
-//    )
-//    LaunchedEffect(key1 = true ){
-//        launcher.launch(android.Manifest.permission.CAMERA)
-//    }
-//    Column (
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        if(hasCameraPermission) {
-//            AndroidView(factory = { context ->
-//                val previewView = PreviewView(context)
-//                val preview = Preview.Builder().build()
-//                val selector = CameraSelector.Builder()
-//                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-//                    .build()
-//                preview.setSurfaceProvider(previewView.surfaceProvider)
-//                val imageAnalysis = ImageAnalysis.Builder()
-//                    .setTargetResolution(
-//                        Size(
-//                            400,
-//                            400
-//                        )
-//                    )
-//                    .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-//                    .build()
-//                imageAnalysis.setAnalyzer(
-//                    ContextCompat.getMainExecutor(context),
-//                    QRAnalyzer { result ->
-//                        code = result
-//                    }
-//                )
-//                try {
-//                    cameraProviderFuture.get().bindToLifecycle(
-//                        lifecycleOwner,
-//                        selector,
-//                        preview,
-//                        imageAnalysis
-//                    )
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//                previewView
-//            },
-//                modifier = Modifier.weight(1f)
-//            )
-//            Text(
-//                text = code,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.fillMaxWidth().padding(32.dp)
-//            )
-//        }
-//    }
-//}

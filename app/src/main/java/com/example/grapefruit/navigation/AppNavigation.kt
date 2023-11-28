@@ -20,27 +20,19 @@ fun AppNavigationGraph(){
     NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
 
         composable(Routes.HOME_SCREEN){
-            HomeScreen(
-                onNavigateToSpreadsheetTools = {navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)}
-            )
+            HomeScreen(navController)
         }
 
         composable(Routes.SPREADSHEET_TOOLS_SCREEN){
-            SpreadsheetToolsScreen(
-                onNavigateToTopic = {navController.navigate(Routes.TOPIC_SCREEN)}
-            )
+            SpreadsheetToolsScreen(navController)
         }
 
         composable(Routes.TOPIC_SCREEN){
-            TopicScreen(
-                navController
-            )
+            TopicScreen(navController)
         }
 
         composable(Routes.QR_SCREEN){
-            QrScreen(
-                onNavigateToSpreadsheetTools = {navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)}
-            )
+            QrScreen(navController)
         }
     }
 

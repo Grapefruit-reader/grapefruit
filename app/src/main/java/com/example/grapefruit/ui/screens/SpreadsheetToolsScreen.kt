@@ -23,17 +23,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.grapefruit.data.viewmodel.SpreadSheetViewModel
 import com.example.grapefruit.model.MemoryDatabase
 import com.example.grapefruit.model.StringValues
+import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.utils.generatePdf
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
 
 @Composable
 fun SpreadsheetToolsScreen (
+    navController: NavController,
     spreadSheetViewModel: SpreadSheetViewModel = hiltViewModel(),
-    onNavigateToTopic: () -> Unit
 ){
     val sheet by spreadSheetViewModel.sheet.collectAsState()
     val startNewActivityLauncher = rememberLauncherForActivityResult(
@@ -57,14 +59,13 @@ fun SpreadsheetToolsScreen (
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
-                    onNavigateToTopic()
+                    navController.navigate(Routes.TOPIC_SCREEN)
                 }
             )
             {
                 Text(text = "Topic")
             }
             Spacer(modifier = Modifier.height(10.dp))
-
             Button(
                 onClick = {
                     spreadSheetViewModel.readSpreadSheet("${StringValues.FIRST_PAGE_NAME}!A2:B")
@@ -102,7 +103,6 @@ fun SpreadsheetToolsScreen (
                         }
                     }
                 }
-
                 else -> {}
             }
         }

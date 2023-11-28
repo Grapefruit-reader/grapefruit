@@ -44,7 +44,9 @@ class TopicViewModel @Inject constructor(
             spreadSheetRepository.createWorksheet(memoryDatabase.spreadsheetId!!, name)
                 .collectLatest {
                     handleResponse(it,
-                        onSuccess = {Log.d(TAG, "Successfully added new worksheet: $name")},
+                        onSuccess = {
+                            chooseWorksheet(name)
+                            Log.d(TAG, "Successfully added new worksheet: $name") },
                         onError = {error -> Log.d(TAG, error.toString()) }
                     )
                 }
@@ -59,7 +61,7 @@ class TopicViewModel @Inject constructor(
                 handleResponse(it,
                     onSuccess = { data ->
                         val mutableList = mutableListOf<String>()
-                        mutableList.addAll(data.filter{ tab -> tab != StringValues.BASE_FOLDER_NAME})
+                        mutableList.addAll(data.filter{ tab -> tab != StringValues.FIRST_PAGE_NAME})
                         voteWorksheets.value = ResourceState.Success(mutableList)
                     },
                     onError = { error -> Log.d(TAG, error.toString()) }

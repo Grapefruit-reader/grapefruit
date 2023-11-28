@@ -1,5 +1,6 @@
 package com.example.grapefruit.ui.common
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
@@ -8,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -15,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+
 
 @ExperimentalMaterial3Api
 @Composable
@@ -29,7 +32,8 @@ fun NormalTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     isError: Boolean = false,
-    onDone: (KeyboardActionScope.() -> Unit)?
+    onDone: (KeyboardActionScope.() -> Unit)?,
+    errorMessage:String? = null
 ) {
     TextField(
         value = value.trim(),
@@ -52,6 +56,14 @@ fun NormalTextField(
         singleLine = true,
         readOnly = readOnly,
         isError = isError,
+        supportingText = {
+            if(isError) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = errorMessage ?: "",
+                    color = colorScheme.error)
+            }
+        },
         enabled = enabled,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,

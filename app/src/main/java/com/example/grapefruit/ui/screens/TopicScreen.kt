@@ -54,8 +54,6 @@ fun TopicScreen(
 
     val worksheetList = topicViewModel.voteWorksheets.collectAsState()
 
-
-
         @Composable
         fun ScrollableList(){
             Column (modifier = Modifier
@@ -102,10 +100,11 @@ fun TopicScreen(
                     value = createWorksheetValue,
                     label = stringResource(id = R.string.textfield_label_worksheetname),
                     onValueChange = { newValue ->
+                        isWorksheetValueError = (worksheetList.value as ResourceState.Success<MutableList<String>>).data.contains(newValue)
                         createWorksheetValue = newValue
-                        isWorksheetValueError = false
                     },
                     isError = isWorksheetValueError,
+                    errorMessage = stringResource(id = R.string.error_message_name_taken),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Folder,
@@ -118,6 +117,7 @@ fun TopicScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(
+                    enabled = !isWorksheetValueError,
                     onClick = {
                         topicViewModel.createNewWorkSheet(createWorksheetValue)
                         navController.navigate(Routes.QR_SCREEN)
