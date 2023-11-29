@@ -109,7 +109,8 @@ fun SpreadsheetToolsScreen (
             }
             when (sheet) {
                 is ResourceState.Success -> {
-
+                    Toast.makeText(context, "Data reading successful", Toast.LENGTH_SHORT).show()
+                    spreadSheetViewModel.resetSheetValue()
                 }
                 is ResourceState.Loading -> {
                 }
@@ -132,9 +133,9 @@ fun SpreadsheetToolsScreen (
 fun InstructionText(text:String){
     Text(
         text =text,
-        fontSize = 25.sp,
+        fontSize = 20.sp,
         modifier = Modifier
-            .padding(20.dp)
+            .padding(50.dp, 10.dp)
             .fillMaxWidth()
     )
 }

@@ -1,6 +1,7 @@
 package com.example.grapefruit.data.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.grapefruit.data.handleResponse
@@ -39,6 +40,10 @@ class SpreadSheetViewModel @Inject constructor(
 
     val permissionManager = PermissionRequestManager()
 
+    fun resetSheetValue(){
+        _sheet.value = ResourceState.Initial()
+    }
+
     fun readSpreadSheet(range: String) {
         viewModelScope.launch {
             spreadSheetRepository.readSpreadSheet(memoryDatabase.spreadsheetId ?: "", range)
@@ -59,6 +64,7 @@ class SpreadSheetViewModel @Inject constructor(
                             memoryDatabase.userList.clear()
                             memoryDatabase.userList.addAll(userList)
                             _sheet.value = ResourceState.Success(data = "Success")
+
 
                         },
 
