@@ -23,9 +23,6 @@ class WriteVoteViewModel @Inject constructor(
     private var memoryDatabase: MemoryDatabase
 ): ViewModel(){
 
-    init {
-        memoryDatabase.workSheet = "Teszt"
-    }
     var user : MutableStateFlow<User?> = MutableStateFlow(null)
 
     fun setData(user:User){

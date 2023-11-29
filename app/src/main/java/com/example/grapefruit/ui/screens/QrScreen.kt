@@ -1,5 +1,7 @@
 package com.example.grapefruit.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -52,6 +56,28 @@ fun QrScreen(
     var code by remember { mutableStateOf("")}
     val voteResult by writeVoteViewModel.voteWriting.collectAsState()
     var user: User? = null
+    val context = LocalContext.current
+    val cameraProviderFuture = remember {
+        ProcessCameraProvider.getInstance(context)
+    }
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            hasCameraPermission = granted
+        }
+    )
+    LaunchedEffect(key1 = true) {
+        launcher.launch(Manifest.permission.CAMERA)
+    }
 
     val startNewActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -97,77 +123,80 @@ fun QrScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ){
-        Column {
-            AndroidView({ context ->
-                val cameraExecutor = Executors.newSingleThreadExecutor()
-                val previewView = PreviewView(context).also {
-                    it.scaleType = PreviewView.ScaleType.FILL_CENTER
-                }
-                val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-                cameraProviderFuture.addListener({
-                    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-                    val preview = Preview.Builder()
-                        .build()
-                        .also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
-                        }
-
-                    val imageCapture = ImageCapture.Builder().build()
-
-                    val imageAnalyzer = ImageAnalysis.Builder()
-                        .build()
-                        .also {
-                            it.setAnalyzer(cameraExecutor, BarcodeAnalyser{
-                                code = it
-                            })
-                        }
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                    try {
-                        cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(context as ComponentActivity, cameraSelector, preview, imageCapture, imageAnalyzer)
-                    } catch(exc: Exception) {
-                        Log.e("DEBUG", "Use case binding failed", exc)
+        if(hasCameraPermission) {
+            Column {
+                AndroidView({ context ->
+                    val cameraExecutor = Executors.newSingleThreadExecutor()
+                    val previewView = PreviewView(context).also {
+                        it.scaleType = PreviewView.ScaleType.FILL_CENTER
                     }
-                }, ContextCompat.getMainExecutor(context))
-                previewView
-            },
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            if(code == ""){
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { navController.popBackStack() }
-                ) {
-                    Text(text = "End topic")
-                }
-            }
-            Column(modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if(code !="") {
-                    Text(text = code)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement  = Arrangement.Center
+                    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+                    cameraProviderFuture.addListener({
+                        val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+                        val preview = Preview.Builder()
+                            .build()
+                            .also {
+                                it.setSurfaceProvider(previewView.surfaceProvider)
+                            }
+
+                        val imageCapture = ImageCapture.Builder().build()
+
+                        val imageAnalyzer = ImageAnalysis.Builder()
+                            .build()
+                            .also {
+                                it.setAnalyzer(cameraExecutor, BarcodeAnalyser{
+                                    code = it
+                                })
+                            }
+                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                        try {
+                            cameraProvider.unbindAll()
+                            cameraProvider.bindToLifecycle(context as ComponentActivity, cameraSelector, preview, imageCapture, imageAnalyzer)
+                        } catch(exc: Exception) {
+                            Log.e("DEBUG", "Use case binding failed", exc)
+                        }
+                    }, ContextCompat.getMainExecutor(context))
+                    previewView
+                },
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                if(code == ""){
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { navController.popBackStack() }
                     ) {
-                        Button(onClick = { vote( "Yes")}, modifier = Modifier.size(100.dp,50.dp)) {
-                            Text("Yes")
-                        }
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Button(onClick = { vote("No") }, modifier = Modifier.size(100.dp,50.dp)) {
-                            Text("No")
-                        }
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Button(onClick = { vote("Resides") }, modifier = Modifier.size(100.dp,50.dp)) {
-                            Text("Resides")
+                        Text(text = "End topic")
+                    }
+                }
+                Column(modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if(code !="") {
+                        Text(text = code)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement  = Arrangement.Center
+                        ) {
+                            Button(onClick = { vote( "Yes")}, modifier = Modifier.size(100.dp,50.dp)) {
+                                Text("Yes")
+                            }
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Button(onClick = { vote("No") }, modifier = Modifier.size(100.dp,50.dp)) {
+                                Text("No")
+                            }
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Button(onClick = { vote("Resides") }, modifier = Modifier.size(100.dp,50.dp)) {
+                                Text("Resides")
+                            }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
+
     }
 }
