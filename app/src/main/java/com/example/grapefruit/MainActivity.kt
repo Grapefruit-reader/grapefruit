@@ -32,51 +32,28 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private var mGoogleSignInClient : GoogleSignInClient? = null
+    val RC_SIGN_IN = 2
 
+    private var mGoogleSignInClient : GoogleSignInClient? = null
     private var signedInAccount : GoogleSignInAccount? = null
 
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .build()
 
-    val RC_SIGN_IN = 2
 
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent{
-            ComposeBasicsTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White))
-                    {
-                    AppEntryPoint()
-                }
-            }
-        }
-
-        //LOGIN
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         signedInAccount = GoogleSignIn.getLastSignedInAccount(this)
+
         if (signedInAccount == null){
             signIn()
-        }
-
-        setContent{
-            ComposeBasicsTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White))
-                {
-                    AppEntryPoint()
-                }
+        }else{
+            setContent{
+                AppContent()
             }
         }
     }
@@ -99,26 +76,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             signedInAccount = completedTask.getResult(ApiException::class.java)
             GoogleSignIn.getLastSignedInAccount(applicationContext)
 
             // Signed in successfully, show authenticated UI.
-            //updateUI(account)
             setContent {
-                setContent{
-                    ComposeBasicsTheme {
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.White))
-                        {
-                            AppEntryPoint()
-                        }
-                    }
-                }
+                AppContent()
             }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
@@ -129,19 +94,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun AppContent(){
     ComposeBasicsTheme {
-        Greeting("Android")
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White))
+        {
+            AppEntryPoint()
+        }
     }
 }
 

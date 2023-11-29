@@ -1,7 +1,10 @@
 package com.example.grapefruit.ui.screens
 
+import android.content.Intent
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +46,9 @@ import com.example.grapefruit.model.FileInfo
 import com.example.grapefruit.navigation.Routes
 import com.example.grapefruit.ui.common.ButtonList
 import com.example.grapefruit.ui.common.NormalTextField
+import com.example.grapefruit.ui.permisions.ManagePermissionsWithPermissionManager
+import com.example.grapefruit.ui.permisions.PermissionRequest
+import com.example.grapefruit.ui.permisions.PermissionRequestManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
 
@@ -54,15 +60,12 @@ fun HomeScreen(
     homeviewModel: HomeViewModel = hiltViewModel(),
 ) {
     val fileResponse by homeviewModel.folder.collectAsState()
-    val startNewActivityLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) {
-        navController.navigate(Routes.HOME_SCREEN)
-    }
     var folderValue by remember { mutableStateOf("") }
     var isFolderValueError by remember { mutableStateOf(false) }
     var fileList = homeviewModel.spreadSheetsInFolder.collectAsState()
 
+
+    ManagePermissionsWithPermissionManager(permissionManager = homeviewModel.permissionManager)
 
 
     LaunchedEffect(Unit){
@@ -172,6 +175,7 @@ fun HomeScreen(
 
                         is ResourceState.Success -> {
                             navController.navigate(Routes.SPREADSHEET_TOOLS_SCREEN)
+                            homeviewModel.resetFolder()
                         }
 
                         is ResourceState.Loading -> {
@@ -182,23 +186,10 @@ fun HomeScreen(
                         }
 
                         is ResourceState.Error -> {
-                            val error = fileResponse as ResourceState.Error<String?>
-                            when (error.error) {
-                                is UserRecoverableAuthIOException -> {
-                                    val intent =
-                                        (error.error as UserRecoverableAuthIOException).intent
-                                    startNewActivityLauncher.launch(intent)
-                                }
-
-                                else -> {
-                                    Log.d("InitTab", error.error.toString())
-
+                            Log.d("InitTab", (fileResponse as ResourceState.Error<String>).error.toString())
                                     //do something
-                                }
-                            }
                         }
 
-                        else -> {}
                     }
                 }
 
