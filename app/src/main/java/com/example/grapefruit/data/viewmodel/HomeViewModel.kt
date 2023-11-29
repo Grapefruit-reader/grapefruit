@@ -107,7 +107,9 @@ fun getAllSpreadSheetsInFolder() {
                         onSuccess = { data ->
                             spreadSheetsInFolder.value = ResourceState.Success(data)
                         },
-                        onError = { error -> Log.d(TAG, "Error: $error") },
+                        onError = { error ->
+                                _folder.value = ResourceState.Error((error))
+                                 Log.d(TAG, "Error: $error") },
                         onLoading = { spreadSheetsInFolder.value = ResourceState.Loading() },
 
                         )

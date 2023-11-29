@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,10 @@ fun TopicScreen(
     var isWorksheetValueError by remember { mutableStateOf(false) }
 
     val worksheetList = topicViewModel.voteWorksheets.collectAsState()
+
+    LaunchedEffect(Unit){
+        topicViewModel.listWorkSheets()
+    }
 
     @Composable
     fun ScrollableList() {

@@ -24,9 +24,7 @@ class TopicViewModel @Inject constructor(
     var memoryDatabase: MemoryDatabase
 ) : ViewModel() {
 
-    init {
-        listWorkSheets()
-    }
+
 
     companion object {
         const val TAG = "TopicViewModel"
@@ -55,7 +53,7 @@ class TopicViewModel @Inject constructor(
     }
 
 
-    private fun listWorkSheets(){
+    fun listWorkSheets(){
         viewModelScope.launch {
             spreadSheetRepository.listWorksheetNames(memoryDatabase.spreadsheetId!!).collectLatest {
                 handleResponse(it,
