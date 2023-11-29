@@ -15,8 +15,8 @@ class  PermissionRequestManager(
 
 ) {
     var permissionState = MutableStateFlow(PermissionRequest.NO_REQUESTS)
-    private var onResult: () -> Unit = {}
-    private lateinit var intent: Intent
+    var onResult: () -> Unit = {}
+    lateinit var intent: Intent
 
     fun requestPermissionAndRepeatRequest(intent: Intent, onResult: () -> Unit){
         this.intent = intent
