@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import com.example.grapefruit.data.viewmodel.SpreadSheetViewModel
 import com.example.grapefruit.model.StringValues
 import com.example.grapefruit.navigation.Routes
+import com.example.grapefruit.ui.permisions.ManagePermissionsWithPermissionManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import hu.blueberry.cloud.ResourceState
 
@@ -38,20 +39,17 @@ fun SpreadsheetToolsScreen (
     spreadSheetViewModel: SpreadSheetViewModel = hiltViewModel(),
 ){
     val sheet by spreadSheetViewModel.sheet.collectAsState()
-    val startNewActivityLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) {
-        navController.navigate(Routes.HOME_SCREEN)
-    }
-
     val name = "Spreadsheet name" //TODO: viewmodelből szeretném megkapni
     val context = LocalContext.current
     var hasReadSheet by remember {
         mutableStateOf(false)
     }
 
+    ManagePermissionsWithPermissionManager(permissionManager = spreadSheetViewModel.permissionManager)
+
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -111,11 +109,6 @@ fun SpreadsheetToolsScreen (
                 is ResourceState.Error -> {
                     val error = sheet as ResourceState.Error<String?>
                     when (error.error) {
-                        is UserRecoverableAuthIOException -> {
-                            val intent = (error.error as UserRecoverableAuthIOException).intent
-                            startNewActivityLauncher.launch(intent)
-                        }
-
                         else -> {
                             Toast.makeText(context, error.error.toString(), Toast.LENGTH_LONG).show()
                         }
