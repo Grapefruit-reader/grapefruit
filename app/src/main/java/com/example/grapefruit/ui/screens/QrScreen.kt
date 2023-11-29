@@ -3,6 +3,7 @@ package com.example.grapefruit.ui.screens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -98,7 +99,13 @@ fun QrScreen(
     }
 
     fun vote(vote: String) {
+        try{
+
         readUserData(code)
+        }catch (_: Exception){
+            Toast.makeText(context, "Not a voting QR code!", Toast.LENGTH_SHORT).show()
+            return
+        }
         when (vote) {
             "Yes" -> writeVoteViewModel.writeYes(user!!.name, user!!.share)
             "No" -> writeVoteViewModel.writeNo(user!!.name, user!!.share)
@@ -120,6 +127,8 @@ fun QrScreen(
                 code = ""
             }
         )
+
+
     }
 
     Box(
