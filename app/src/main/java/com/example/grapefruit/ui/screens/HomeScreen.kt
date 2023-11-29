@@ -82,7 +82,7 @@ fun HomeScreen(
 
 
             Text(
-                text = "Choose a Topic",
+                text = "Choose a Spreadsheet",
                 fontSize = 25.sp
             )
 

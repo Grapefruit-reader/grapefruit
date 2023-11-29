@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,7 +43,7 @@ fun SpreadsheetToolsScreen (
     spreadSheetViewModel: SpreadSheetViewModel = hiltViewModel(),
 ){
     val sheet by spreadSheetViewModel.sheet.collectAsState()
-    val name = "Spreadsheet name" //TODO: viewmodelből szeretném megkapni
+    val name = "1. Fill out the information in the spreadsheet \n2. Read it back in the app \n3. Print the QR codes!" //TODO: viewmodelből szeretném megkapni
     val context = LocalContext.current
     var hasReadSheet by remember {
         mutableStateOf(false)
@@ -53,11 +57,14 @@ fun SpreadsheetToolsScreen (
             .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = name,
-                fontSize = 25.sp
-            )
-            Spacer(modifier = Modifier.height(10.dp))
+
+            InstructionText(text = "1. Fill out the information in the spreadsheet")
+
+            InstructionText(text = "2. Read it back in the app")
+
+            InstructionText(text = "3. Print the QR codes")
+
+            Spacer(modifier = Modifier.height(60.dp))
             Button(
                 onClick = {
                     navController.navigate(Routes.TOPIC_SCREEN)
@@ -120,3 +127,14 @@ fun SpreadsheetToolsScreen (
     }
 }
 
+
+@Composable
+fun InstructionText(text:String){
+    Text(
+        text =text,
+        fontSize = 25.sp,
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+    )
+}
